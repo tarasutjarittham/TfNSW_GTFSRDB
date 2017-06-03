@@ -18,6 +18,7 @@
 
 # Authors:
 # Tara Sutjarittham
+# Forked from mattwigway/gtfsrdb
 
 #from google.transit import gtfs_realtime_pb2
 import tfnsw_gtfs_realtime_pb2
