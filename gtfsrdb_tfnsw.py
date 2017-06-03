@@ -1,10 +1,8 @@
 #!/usr/bin/python
 
-# gtfsrdb.py: load gtfs-realtime data to a database
-# recommended to have the (static) GTFS data for the agency you are connecting
-# to already loaded.
+# gtfsrdb_tfnsw.py: load TfNSW gtfs-realtime data to a database
 
-# Copyright 2011, 2013 Matt Conway
+# Copyright 2017, Tara Sutjarittham
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +17,7 @@
 # limitations under the License.
 
 # Authors:
-# Matt Conway: main code
-# Tara Sutjarittham: modification of main code for TfNSW
+# Tara Sutjarittham
 
 #from google.transit import gtfs_realtime_pb2
 import tfnsw_gtfs_realtime_pb2
