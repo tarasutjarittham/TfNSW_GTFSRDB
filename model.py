@@ -62,7 +62,7 @@ class TripUpdate(Base):
     vehicle_license_plate = Column(String(32))
 
     # moved from the header, and reformatted as datetime
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime(timezone=True))
     transport_mode = Column(String(20))
 
     StopTimeUpdates = relationship('StopTimeUpdate', backref='TripUpdate')
@@ -77,12 +77,12 @@ class StopTimeUpdate(Base):
 
     # Collapsed StopTimeEvent
     arrival_delay = Column(Integer)
-    arrival_time = Column(Integer)
+    arrival_time = Column(DateTime(timezone=True))
     arrival_uncertainty = Column(Integer)
 
     # Collapsed StopTimeEvent
     departure_delay = Column(Integer)
-    departure_time = Column(Integer)
+    departure_time = Column(DateTime(timezone=True))
     departure_uncertainty = Column(Integer)
 
     # TODO: Add domain
@@ -151,7 +151,7 @@ class VehiclePosition(Base):
     position_longitude = Column(Float)
     position_bearing = Column(Float)
     position_speed = Column(Float)
-    position_timestamp = Column(DateTime)
+    position_timestamp = Column(DateTime(timezone=True))
     congestion_level = Column(String(60))
     occupancy_status = Column(String(60))
 
@@ -162,7 +162,7 @@ class VehiclePosition(Base):
     special_vehicle_attributes = Column(Float)
 
     # moved from the header, and reformatted as datetime
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime(timezone=True))
     transport_mode = Column(String(20))
    
 

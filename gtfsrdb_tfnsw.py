@@ -198,10 +198,12 @@ try:
                             stop_sequence=stu.stop_sequence,
                             stop_id=stu.stop_id,
                             arrival_delay=stu.arrival.delay,
-                            arrival_time=stu.arrival.time,
+                            #arrival_time=stu.arrival.time,
+                            arrival_time=datetime.datetime.fromtimestamp(stu.arrival.time, tz=pytz.timezone('Australia/Sydney')),
                             arrival_uncertainty=stu.arrival.uncertainty,
                             departure_delay=stu.departure.delay,
-                            departure_time=stu.departure.time,
+                            #departure_time=stu.departure.time,
+                            departure_time=datetime.datetime.fromtimestamp(stu.departure.time, tz=pytz.timezone('Australia/Sydney')),
                             departure_uncertainty=stu.departure.uncertainty,
                             schedule_relationship=
                             tu.trip.DESCRIPTOR.enum_types_by_name['ScheduleRelationship'].values_by_number[
