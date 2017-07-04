@@ -40,7 +40,6 @@ Base = declarative_base()
 # VehicleDescriptor.license_plate
 
 # The oid is called oid because several of the GTFSr types have string ids
-# TODO: add sequences
 
 class TripUpdate(Base):
     __tablename__ = 'trip_updates'
@@ -71,7 +70,6 @@ class StopTimeUpdate(Base):
     __tablename__ = 'stop_time_updates'
     oid = Column(Integer, primary_key=True)
 
-    # TODO: Fill one from the other
     stop_sequence = Column(Integer)
     stop_id = Column(String(32))
 
@@ -85,7 +83,6 @@ class StopTimeUpdate(Base):
     departure_time = Column(DateTime(timezone=True))
     departure_uncertainty = Column(Integer)
 
-    # TODO: Add domain
     schedule_relationship = Column(String(32))
 
     # Link it to the TripUpdate
@@ -134,7 +131,6 @@ class VehiclePosition(Base):
     oid = Column(Integer, primary_key=True)
 
     # This replaces the TripDescriptor message
-    # TODO: figure out the relations
     trip_id = Column(String(32))
     route_id = Column(String(32))
     trip_start_time = Column(String(8))
