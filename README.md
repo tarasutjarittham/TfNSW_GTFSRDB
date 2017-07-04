@@ -56,14 +56,14 @@ Following is a list of input available:
 **Case1:** Load GTFS-realtime bus positions and store this in a database named mydb3 (note that if you are using postgresql database the database has to be pre-created). The request will run every 30 seconds (default wait time) and new data is append to the table. 
 
 ```
-python gtfsrdb_tfnsw.py -p 'https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/buses' --database="postgresql://localhost/mydb3" --apikey="Ae1BjiMglwAIhIZA3ahIsxqMw1aZqEfdicT7" -m "bus" -c
+python gtfsrdb_tfnsw.py -p 'https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/buses' --database="postgresql://localhost/mydb3" --apikey="<Your API Key>" -m "bus" -c
 
 ```
 
 **Case2:** Notice that `-1` is used in this case. The request happens only once querying TripUpdates for bus.
 
 ```
-python gtfsrdb_tfnsw.py -t 'https://api.transport.nsw.gov.au/v1/gtfs/realtime/buses' --database="postgresql://localhost/mydb3" --apikey="Ae1BjiMglwAIhIZA3ahIsxqMw1aZqEfdicT7" -m "bus" -c -1
+python gtfsrdb_tfnsw.py -t 'https://api.transport.nsw.gov.au/v1/gtfs/realtime/buses' --database="postgresql://localhost/mydb3" --apikey="<Your API Key>" -m "bus" -c -1
 ```
 
 ### Output
