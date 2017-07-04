@@ -11,12 +11,14 @@ These instructions will get you a copy of the project up and running on your loc
  
 ### Prerequisites
 TfNSW-GTFSrDB requires Python 2.7.
-Below is a list of Python packages required to be installed for this project (these packages are not included in the PYthon standard library):
+Below is a list of Python packages required to be installed for this project (these packages are not included as part of Python standard library):
 
+* protobuf
 * sqlalchemy
 * pytz
+* psycopg2
 
-To install python packages, enter the following command in the command prompt:
+To install the aforementioned python packages, enter the following command in the command prompt:
 
 ```
 pip install <Package_name>
