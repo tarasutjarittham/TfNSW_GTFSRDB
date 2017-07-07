@@ -250,35 +250,35 @@ try:
                     logger.warning('%s - %s - feed version has changed: found %s, expected 1.0', GTFSR_type, opts.mode, fm.header.gtfs_realtime_version)
 
                     #print 'Adding %s alerts' % len(fm.entity)
-                    logger.info('%s - %s - Adding %s alerts', GTFSR_type, opts.mode, len(fm.entity))
+                logger.info('%s - %s - Adding %s alerts', GTFSR_type, opts.mode, len(fm.entity))
 
-                    for entity in fm.entity:
-                        alert = entity.alert
-                        dbalert = Alert(
-                            start=alert.active_period[0].start,
-                            end=alert.active_period[0].end,
-                            cause=alert.DESCRIPTOR.enum_types_by_name['Cause'].values_by_number[alert.cause].name,
-                            effect=alert.DESCRIPTOR.enum_types_by_name['Effect'].values_by_number[alert.effect].name,
-                            url=getTrans(alert.url, opts.lang),
-                            header_text=getTrans(alert.header_text, opts.lang),
-                            description_text=getTrans(alert.description_text,
-                                                      opts.lang)
-                        )
+                for entity in fm.entity:
+                    alert = entity.alert
+                    dbalert = Alert(
+                        #start=alert.active_period[0].start,
+                        #end=alert.active_period[0].end,
+                        cause=alert.DESCRIPTOR.enum_types_by_name['Cause'].values_by_number[alert.cause].name,
+                        effect=alert.DESCRIPTOR.enum_types_by_name['Effect'].values_by_number[alert.effect].name,
+                        url=getTrans(alert.url, opts.lang),
+                        header_text=getTrans(alert.header_text, opts.lang),
+                        description_text=getTrans(alert.description_text,
+                                                  opts.lang)
+                    )
 
-                        session.add(dbalert)
-                        for ie in alert.informed_entity:
-                            dbie = EntitySelector(
-                                agency_id=ie.agency_id,
-                                route_id=ie.route_id,
-                                route_type=ie.route_type,
-                                stop_id=ie.stop_id,
+                    session.add(dbalert)
+                    for ie in alert.informed_entity:
+                        dbie = EntitySelector(
+                            agency_id=ie.agency_id,
+                            route_id=ie.route_id,
+                            route_type=ie.route_type,
+                            stop_id=ie.stop_id,
 
-                                trip_id=ie.trip.trip_id,
-                                trip_route_id=ie.trip.route_id,
-                                trip_start_time=ie.trip.start_time,
-                                trip_start_date=ie.trip.start_date)
-                            session.add(dbie)
-                            dbalert.InformedEntities.append(dbie)
+                            trip_id=ie.trip.trip_id,
+                            trip_route_id=ie.trip.route_id,
+                            trip_start_time=ie.trip.start_time,
+                            trip_start_date=ie.trip.start_date)
+                        session.add(dbie)
+                        dbalert.InformedEntities.append(dbie)
 
             if opts.vehiclePositions:
                 GTFSR_type = 'vehiclePositions'
