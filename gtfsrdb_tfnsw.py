@@ -31,6 +31,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from urllib2 import urlopen,Request
 from model import *
+import logging, logging.handlers
+import logging.config
+
 
 p = OptionParser()
 p.add_option('-t', '--trip-updates', dest='tripUpdates', default=None,
@@ -64,14 +67,18 @@ p.add_option('-l', '--language', default='en', dest='lang', metavar='LANG',
 p.add_option('-1', '--once', default=False, dest='once', action='store_true',
              help='only run the loader one time')
 
-p.add_option('-k', '--apikey', default=False, dest='apiKey',
+p.add_option('-k', '--apikey', default=None, dest='apiKey',
              help='API Key', metavar='KEY')
 
-p.add_option('-m', '--mode', default=False, dest='mode',
+p.add_option('-m', '--mode', default=None, dest='mode',
              help='mode of transportation E.g. Bus, Train', metavar='MODE')
 
 opts,args = p.parse_args()
 #opts= p.parse_args()
+
+#Keep log
+logging.config.fileConfig('logging.conf', defaults={'logfilename': 'GTFSR.log'})
+logger = logging.getLogger('GTFSR')
 
 if opts.dsn == None:
     print 'No database specified!'
@@ -94,7 +101,8 @@ if opts.apiKey == None:
     print 'Warning: no API Key specified, proceeding without API Key'
 
 if opts.mode == None:
-    print 'Warning: no mode of transport specified, proceeding without mode of transport'
+    #print 'Warning: no mode of transport specified, proceeding without mode of transport'
+    logger.warning('no mode of transport specified, proceeding without mode of transport')
     opts.mode = 'NA'
 
 
@@ -107,13 +115,19 @@ session = sessionmaker(bind=engine)()
 # Check if it has the tables
 # Base from model.py
 for table in Base.metadata.tables.keys():
-    if not engine.has_table(table):
-        if opts.create:
-            print 'Creating table %s' % table
-            Base.metadata.tables[table].create(engine)
-        else:
-            print 'Missing table %s! Use -c to create it.' % table
-            exit(1)
+    try:
+        if not engine.has_table(table):
+            if opts.create:
+                #print 'Creating table %s' % table
+                logger.info('Creating table %s', table)
+                Base.metadata.tables[table].create(engine)
+            else:
+                #print 'Missing table %s! Use -c to create it.' % table
+                logger.error('Missing table %s! Use -c to create it.', table)
+                exit(1)
+    except Exception, err:
+        logger.error('Database Error: %s', str(err))
+        exit(1)
 
 
 # Get a specific translation from a TranslatedString
@@ -144,7 +158,6 @@ try:
                 #Add API key to the correct format to be included in the header
                 api_key='apikey' + ' ' + opts.apiKey
 
-
             if opts.deleteOld:
                 # Go through all of the tables that we create, clear them
                 # Don't mess with other tables (i.e., tables from static GTFS)
@@ -153,6 +166,7 @@ try:
                         session.delete(obj)
 
             if opts.tripUpdates:
+                GTFSR_type = 'tripUpdates'
                 q = Request(opts.tripUpdates)
                 q.add_header('Authorization', api_key)
                 fm = tfnsw_gtfs_realtime_pb2.FeedMessage()
@@ -166,9 +180,11 @@ try:
 
                 # Check the feed version
                 if fm.header.gtfs_realtime_version != u'1.0':
-                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    #print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    logger.warning('%s - %s - feed version has changed: found %s, expected 1.0', GTFSR_type, opts.mode, fm.header.gtfs_realtime_version)
 
-                print 'Adding %s trip updates' % len(fm.entity)
+                #print 'Adding %s trip updates' % len(fm.entity)
+                logger.info('%s - %s - Adding %s trip updates', GTFSR_type, opts.mode, len(fm.entity))
                 for entity in fm.entity:
 
                     tu = entity.trip_update
@@ -215,6 +231,7 @@ try:
                     session.add(dbtu)
 
             if opts.alerts:
+                GTFSR_type = 'alerts'
                 q = Request(opts.alerts)
                 q.add_header('Authorization', api_key)
                 fm = tfnsw_gtfs_realtime_pb2.FeedMessage()
@@ -228,9 +245,12 @@ try:
 
                 # Check the feed version
                 if fm.header.gtfs_realtime_version != u'1.0':
-                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    #print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    logger.warning('%s - %s - feed version has changed: found %s, expected 1.0', GTFSR_type, opts.mode, fm.header.gtfs_realtime_version)
 
-                    print 'Adding %s alerts' % len(fm.entity)
+                    #print 'Adding %s alerts' % len(fm.entity)
+                    logger.info('%s - %s - Adding %s alerts', GTFSR_type, opts.mode, len(fm.entity))
+
                     for entity in fm.entity:
                         alert = entity.alert
                         dbalert = Alert(
@@ -258,7 +278,9 @@ try:
                                 trip_start_date=ie.trip.start_date)
                             session.add(dbie)
                             dbalert.InformedEntities.append(dbie)
+
             if opts.vehiclePositions:
+                GTFSR_type = 'vehiclePositions'
                 q = Request(opts.vehiclePositions)
                 q.add_header('Authorization', api_key)
                 fm = tfnsw_gtfs_realtime_pb2.FeedMessage()
@@ -272,9 +294,12 @@ try:
 
                 # Check the feed version
                 if fm.header.gtfs_realtime_version != u'1.0':
-                    print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    #print 'Warning: feed version has changed: found %s, expected 1.0' % fm.header.gtfs_realtime_version
+                    logger.warning('%s - %s - feed version has changed: found %s, expected 1.0', GTFSR_type, opts.mode,
+                                   fm.header.gtfs_realtime_version)
 
-                print 'Adding %s vehicle_positions' % len(fm.entity)
+                #print 'Adding %s vehicle_positions' % len(fm.entity)
+                logger.info('%s - %s - Adding %s vehicle_positions', GTFSR_type, opts.mode, len(fm.entity))
                 for entity in fm.entity:
                     vp = entity.vehicle
 
@@ -309,8 +334,9 @@ try:
             session.commit()
         except:
             # else:
-            print 'Exception occurred in iteration'
-            print sys.exc_info()
+            #print 'Exception occurred in iteration'
+            #print sys.exc_info()
+            logger.error('%s - %s - Exception occurred in iteration: %s', GTFSR_type, opts.mode, sys.exc_info())
 
         # put this outside the try...except so it won't be skipped when something
         # fails
