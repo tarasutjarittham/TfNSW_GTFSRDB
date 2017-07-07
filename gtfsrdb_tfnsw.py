@@ -77,7 +77,8 @@ opts,args = p.parse_args()
 #opts= p.parse_args()
 
 #Keep log
-logging.config.fileConfig('logging.conf', defaults={'logfilename': 'GTFSR.log'})
+#logging.config.fileConfig('logging.conf', defaults={'logfilename': 'GTFSR.log'})
+logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('GTFSR')
 
 if opts.dsn == None:
