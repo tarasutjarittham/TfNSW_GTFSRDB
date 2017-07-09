@@ -109,6 +109,10 @@ class Alert(Base):
 
     InformedEntities = relationship('EntitySelector', backref='Alert')
 
+    # moved from the header, and reformatted as datetime
+    timestamp = Column(DateTime(timezone=True))
+    transport_mode = Column(String(20))
+
 class EntitySelector(Base):
     __tablename__ = 'entity_selectors'
     oid = Column(Integer, primary_key=True)

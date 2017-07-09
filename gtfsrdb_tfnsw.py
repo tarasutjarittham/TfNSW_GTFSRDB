@@ -262,7 +262,9 @@ try:
                         url=getTrans(alert.url, opts.lang),
                         header_text=getTrans(alert.header_text, opts.lang),
                         description_text=getTrans(alert.description_text,
-                                                  opts.lang)
+                                                  opts.lang),
+                        timestamp=timestamp,
+                        transport_mode=opts.mode
                     )
 
                     session.add(dbalert)
