@@ -53,22 +53,36 @@ Following is a list of input available:
 
 ### Example Use
 
-**Case1:** Load GTFS-realtime bus positions and store this in a database named mydb3 (note that if you are using postgresql database the database has to be pre-created). The request will run every 30 seconds (default wait time) and new data is append to the table. 
+**Case1:** Load GTFS-realtime bus positions and store it in a database named mydb3 (note that if you are using postgresql database the database has to be pre-created). The request will run every 30 second (default wait time) and new data is append to the table. 
 
 ```
 python gtfsrdb_tfnsw.py -p 'https://api.transport.nsw.gov.au/v1/gtfs/vehiclepos/buses' --database="postgresql://localhost/mydb3" --apikey="<Your API Key>" -m "bus" -c
 
 ```
 
-**Case2:** Notice that `-1` is used in this case. The request happens only once querying TripUpdates for bus.
+**Case2:** Notice that `-1` is used in this case. The request happens only once querying TripUpdates for buses.
 
 ```
 python gtfsrdb_tfnsw.py -t 'https://api.transport.nsw.gov.au/v1/gtfs/realtime/buses' --database="postgresql://localhost/mydb3" --apikey="<Your API Key>" -m "bus" -c -1
 ```
 
-### Output
-Data is stored in table(s) in the specified database when running the script.
+## Output
+### Database
+Data is stored in table(s) in the specified database. Tables created include:
+
+* alerts
+* entity_selectors
+* stop_time_updates
+* trip_updates
+* vehicle_positions
+
+### Logging
+Logging will be kept and the default location of the log file can be found in `logs/GTFSR.log`
+The location to store log fle can be changed in `logging.conf` under [handler_fileHandler], by modifying the args value.
+
+
+
 
 ## Known limitations (BUGS!)
-For some reasons `-a <your API Key>` is currently not working due to it adding an extra space before the actual key, thus causing a failure in authentication. Please use `--apikey="<Your API Key>"` to parse the key to the script.
+For some reasons `-a <your API Key>` is currently not working due to it adding an extra space before the actual key, thus causing a failure in authentication. Please use `--apikey="<Your API Key>"` to parse your authentication key to the script.
 
