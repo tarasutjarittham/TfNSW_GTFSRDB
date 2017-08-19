@@ -20,7 +20,7 @@
 # Matt Conway: main code
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Float, BigInteger
 from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
@@ -68,7 +68,7 @@ class TripUpdate(Base):
     
 class StopTimeUpdate(Base):
     __tablename__ = 'stop_time_updates'
-    oid = Column(Integer, primary_key=True)
+    oid = Column(BigInteger, primary_key=True)
 
     stop_sequence = Column(Integer)
     stop_id = Column(String(32))
@@ -132,18 +132,18 @@ class EntitySelector(Base):
 
 class VehiclePosition(Base):
     __tablename__ = 'vehicle_positions'
-    oid = Column(Integer, primary_key=True)
+    oid = Column(BigInteger, primary_key=True)
 
     # This replaces the TripDescriptor message
     trip_id = Column(String(32))
     route_id = Column(String(32))
-    trip_start_time = Column(String(8))
+    trip_start_time = Column(String(15))
     trip_start_date = Column(String(15))
     schedule_relationship = Column(String(32))
  
     # Collapsed VehicleDescriptor
-    vehicle_id = Column(String(60))
-    vehicle_label = Column(String(60))
+    vehicle_id = Column(String(150))
+    vehicle_label = Column(String(300))
     vehicle_license_plate = Column(String(15))
 
     # Collapsed Position
@@ -158,7 +158,7 @@ class VehiclePosition(Base):
     # Extended Vehicle Descriptor
     air_conditioned = Column(Boolean)
     wheelchair_accessible = Column(Integer)
-    vehicle_model = Column(String(60))
+    vehicle_model = Column(String(150))
     special_vehicle_attributes = Column(Float)
 
     # moved from the header, and reformatted as datetime
