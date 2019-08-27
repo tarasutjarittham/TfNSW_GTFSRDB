@@ -142,7 +142,7 @@ class VehiclePosition(Base):
     schedule_relationship = Column(String(32))
  
     # Collapsed VehicleDescriptor
-    vehicle_id = Column(String(150))
+    vehicle_id = Column(String(300))
     vehicle_label = Column(String(300))
     vehicle_license_plate = Column(String(15))
 
