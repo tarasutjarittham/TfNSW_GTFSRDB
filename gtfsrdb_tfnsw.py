@@ -29,7 +29,9 @@ import datetime
 import pytz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from urllib2 import urlopen,Request
+#from urllib2 import urlopen ,Request
+from urllib.request import urlopen, Request
+
 from model import *
 import logging, logging.handlers
 import logging.config
@@ -82,24 +84,24 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('GTFSR')
 
 if opts.dsn == None:
-    print 'No database specified!'
+    print('No database specified!')
     exit(1)
 
 if opts.alerts == None and opts.tripUpdates == None and opts.vehiclePositions == None:
-    print 'No trip updates, alerts, or vehicle positions URLs were specified!'
+    print('No trip updates, alerts, or vehicle positions URLs were specified!')
     exit(1)
 
 if opts.alerts == None:
-    print 'Warning: no alert URL specified, proceeding without alerts'
+    print('Warning: no alert URL specified, proceeding without alerts')
 
 if opts.tripUpdates == None:
-    print 'Warning: no trip update URL specified, proceeding without trip updates'
+    print('Warning: no trip update URL specified, proceeding without trip updates')
 
 if opts.vehiclePositions == None:
-    print 'Warning: no vehicle positions URL specified, proceeding without vehicle positions'
+    print('Warning: no vehicle positions URL specified, proceeding without vehicle positions')
 
 if opts.apiKey == None:
-    print 'Warning: no API Key specified, proceeding without API Key'
+    print('Warning: no API Key specified, proceeding without API Key')
 
 if opts.mode == None:
     #print 'Warning: no mode of transport specified, proceeding without mode of transport'
@@ -126,7 +128,7 @@ for table in Base.metadata.tables.keys():
                 #print 'Missing table %s! Use -c to create it.' % table
                 logger.error('Missing table %s! Use -c to create it.', table)
                 exit(1)
-    except Exception, err:
+    except Exception as err:
         logger.error('Database Error: %s', str(err))
         exit(1)
 
@@ -346,11 +348,11 @@ try:
         # also, makes it easier to end the process with ctrl-c, b/c a 
         # KeyboardInterrupt here will end the program (cleanly)
         if opts.once:
-            print "Executed the load ONCE ... going to stop now..."
+            print("Executed the load ONCE ... going to stop now...")
             keep_running = False
         else:
             time.sleep(opts.timeout)
 
 finally:
-    print "Closing session . . ."
+    print("Closing session . . .")
     session.close()
